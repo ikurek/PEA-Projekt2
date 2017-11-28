@@ -1,6 +1,7 @@
 mod file_reader;
 mod print_utils;
 mod graph_generator;
+mod tabu_search;
 
 use std::io;
 
@@ -64,7 +65,7 @@ fn main() {
                 if matrix.is_empty() {
                     println!("Najpierw wczytaj graf z pliku!");
                 } else {
-                    //DynamicProgramingSolution::solve(&matrix, true);
+                    tabu_search::solve(&mut matrix, 20, 0);
                 }
             }
             _ => println!("Niepoprawna wartość!"),
