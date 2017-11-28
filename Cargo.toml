@@ -1,6 +1,10 @@
 [package]
-name = "Tabu_Search"
+name = "tabu_search"
 version = "0.1.0"
 authors = ["Igor Kurek <igorkurek96@gmail.com>"]
 
 [dependencies]
+permutohedron = "0.2"
+rand = "0.3"
+num-traits = "0.1.40"
+time = "0.1.38"

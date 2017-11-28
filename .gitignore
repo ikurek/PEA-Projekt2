@@ -1,2 +1,4 @@
 /target/
 **/*.rs.bk
+.idea/
+Tabu Search.iml
