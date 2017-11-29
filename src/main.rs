@@ -22,10 +22,7 @@ fn main() {
         println!("Wybierz funkcję:");
         println!("1. Wczytaj plik z grafem");
         println!("2. Wygeneruj losowy graf");
-        println!("3. Programowanie dynamiczne");
-        println!("4. Przegląd zupełny");
-        println!("5. Programowanie dynamiczne (Testy uśrednione)");
-        println!("6. Przegląd zupełny (Testy uśrednione)");
+        println!("3. Przeszukiwanie tabu");
         println!("0. Wyjście");
         println!("Wybór: ");
 
@@ -65,10 +62,40 @@ fn main() {
                 if matrix.is_empty() {
                     println!("Najpierw wczytaj graf z pliku!");
                 } else {
-                    tabu_search::solve(&mut matrix, 20, 0);
+                    solve_tsp(&mut matrix)
                 }
             }
             _ => println!("Niepoprawna wartość!"),
         }
     };
+
+    fn solve_tsp(mut matrix: &mut Vec<Vec<i32>>) {
+
+        // Wczytanie iteracji
+        println!("Iteracje:");
+        let mut iterations: String = String::new();
+        io::stdin().read_line(&mut iterations).expect(
+            "Błąd wejścia/wyjścia",
+        );
+        let mut iterations: i32 = iterations.trim().parse().expect("Błędna wartość");
+
+        // Wczytanie kadencji
+        println!("Kadencje:");
+        let mut lifetime: String = String::new();
+        io::stdin().read_line(&mut lifetime).expect(
+            "Błąd wejścia/wyjścia",
+        );
+        let mut lifetime: i32 = lifetime.trim().parse().expect("Błędna wartość");
+
+        // Maksymalna liczba błędów
+        println!("Błędy:");
+        let mut critical_events: String = String::new();
+        io::stdin().read_line(&mut critical_events).expect(
+            "Błąd wejścia/wyjścia",
+        );
+        let mut critical_events: i32 = critical_events.trim().parse().expect("Błędna wartość");
+
+        // Rozwiązanie z parametrami
+        tabu_search::solve(&mut matrix, iterations, 2, 3);
+    }
 }

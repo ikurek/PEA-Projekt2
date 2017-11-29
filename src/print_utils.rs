@@ -7,6 +7,14 @@ pub fn print_matrix(matrix: &Vec<Vec<i32>>) {
     }
 }
 
+pub fn print_tabu_list(tabu_list: &Vec<Vec<i32>>) {
+    println!("Lista tabu:");
+
+    for i in 0..tabu_list.len() {
+        println!("{:?}", tabu_list[i as usize]);
+    }
+}
+
 pub fn print_result(result: i32, result_path: Vec<i32>, elapsed_time: i64) {
     println!();
     println!("****************************************************************");

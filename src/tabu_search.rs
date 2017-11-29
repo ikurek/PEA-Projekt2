@@ -1,16 +1,24 @@
 extern crate rand;
 
+use print_utils;
 use self::rand::Rng;
 
 
-pub fn solve(matrix: &mut Vec<Vec<i32>>, iterations: i32, start: i32) {
+pub fn solve(matrix: &mut Vec<Vec<i32>>,
+             iterations: i32,
+             lifetime: i32,
+             max_critical_events: i32) {
 
     // Ilość istotnych zdarzeń
     let mut critical_events: i32 = 0;
     // Aktualna ściezka
     let mut current_path: Vec<i32> = Vec::new();
     // Koszt aktualnej ściezki
-    let mut current_path_value: i32 = 0;
+    let mut current_path_value: i32 = 999999999;
+    // Najlepsza ściezka
+    let mut best_path: Vec<i32> = Vec::new();
+    // Kosazt najlepszej ścieżki
+    let mut best_path_value: i32 = 9999999;
     // Lista tabu
     let mut tabu_list: Vec<Vec<i32>> = Vec::new();
 
@@ -26,13 +34,79 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>, iterations: i32, start: i32) {
     current_path_value = get_current_path_value(&matrix, &mut current_path);
 
     // Wygeneorwanie pustej listy tabu
-    for i in 0..(matrix.len() as i32) {
-        let mut tabu_list_row: Vec<i32> =
-            current_path.push(i);
+    tabu_list = generate_empty_tabu_list(matrix.len() as i32);
+
+    // Przypisanie początkowych wartości ściezki jako najlepszych znalezionych
+    best_path = current_path.clone();
+    best_path_value = current_path_value.clone();
+
+
+    // Pętla wykonująca zadaną ilość iteracji
+    for i in 0..iterations {
+
+        // Zmienna przechowująca koszt scieżki badanej w aktualnej iteracji
+        let mut iteration_path_value = current_path_value.clone();
+        // Zmiana elementów w ścieżce
+        current_path = swap_elements(&mut current_path, &mut tabu_list, &matrix, lifetime);
+        // Aktualizacja wagi aktualnej ściezki
+        current_path_value = get_current_path_value(&matrix, &mut current_path);
+
+        // Przypisanie wartości aktualnej ścieżki jako najlepszej
+        if (current_path_value < best_path_value) {
+            println!();
+            println!("Ściezka: {:?}", best_path);
+            println!("Koszt ścieżki: {}", best_path_value);
+            best_path = current_path.clone();
+            best_path_value = current_path_value.clone();
+        }
+
+        // Minimalizacja wartości w liście tabu
+        for i in 0..matrix.len() {
+            for j in 0..matrix.len() {
+                if tabu_list[i][j] > 0 {
+                    tabu_list[i][j] = tabu_list[i][j] - 1;
+                }
+            }
+        }
+
+        // Jeżeli wynik nie jest poprawny, zwiększenie licznika krytycznych błędów
+        if iteration_path_value > current_path_value {
+            critical_events = critical_events + 1;
+        } else {
+            critical_events = 0;
+        }
+
+        // Zmiana zbioru i oczyszczenie listy tabu
+        // jeżeli przekroczona została ilość błędów krytycznych
+        if critical_events >= max_critical_events {
+            println!();
+            println!("Przekroczono liczbę błędów, Zerowanie...");
+            rand::thread_rng().shuffle(&mut current_path);
+            tabu_list = generate_empty_tabu_list(matrix.len() as i32)
+        }
     }
+
+    println!();
+    println!("Najlepsza ściezka: {:?}", best_path);
+    println!("Koszt najlepszej ścieżki: {}", best_path_value);
 }
 
-fn get_current_path_value(matrix: &Vec<Vec<i32>>, path: &mut Vec<i32>) -> i32 {
+fn generate_empty_tabu_list(size: i32) -> Vec<Vec<i32>> {
+    let mut tabu_list: Vec<Vec<i32>> = Vec::new();
+
+    for i in 0..size {
+        let mut tabu_list_row: Vec<i32> = Vec::new();
+        for i in 0..size {
+            tabu_list_row.push(0);
+        }
+        tabu_list.push(tabu_list_row);
+    }
+
+    return tabu_list;
+}
+
+fn get_current_path_value(matrix: &Vec<Vec<i32>>,
+                          path: &mut Vec<i32>) -> i32 {
 
     // Początkowy koszt ścieżki to 0
     let mut value: i32 = 0;
@@ -51,4 +125,38 @@ fn get_current_path_value(matrix: &Vec<Vec<i32>>, path: &mut Vec<i32>) -> i32 {
     value = value + matrix[previous_node][0];
 
     return value;
+}
+
+fn swap_elements(path: &mut Vec<i32>,
+                 tabu_list: &mut Vec<Vec<i32>>,
+                 matrix: &Vec<Vec<i32>>,
+                 lifetime: i32) -> Vec<i32> {
+    let mut current_path: Vec<i32> = Vec::new();
+    let mut best_path: Vec<i32> = Vec::new();
+    let mut current_path_value: i32;
+    let mut best_path_value: i32 = 99999999;
+    let mut best_city_x: i32 = 0;
+    let mut best_city_y: i32 = 0;
+
+    for i in 0..path.len() {
+        for j in 0..path.len() {
+            if tabu_list[i][j] == 0 {
+                current_path = path.clone();
+                current_path[i] = path[j];
+                current_path[j] = path[i];
+                current_path_value = get_current_path_value(matrix, &mut current_path);
+
+                if current_path_value < best_path_value {
+                    best_path = current_path;
+                    best_path_value = current_path_value;
+                    best_city_x = (i as i32);
+                    best_city_y = (j as i32);
+                }
+            }
+        }
+    }
+
+    tabu_list[(best_city_x as usize)][(best_city_y as usize)] = lifetime;
+
+    return best_path;
 }
