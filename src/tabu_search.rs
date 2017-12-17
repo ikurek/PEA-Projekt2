@@ -1,4 +1,5 @@
 extern crate rand;
+extern crate time;
 
 use print_utils;
 use self::rand::Rng;
@@ -7,18 +8,22 @@ use self::rand::Rng;
 pub fn solve(matrix: &mut Vec<Vec<i32>>,
              iterations: i32,
              lifetime: i32,
-             max_critical_events: i32) {
+             max_critical_events: i32,
+             max_time_in_seconds: i64) {
+    println!("Przygotowywanie zmiennych...")
 
+    // Początek zliczania czasu
+    let timer_start = time::PreciseTime::now();
     // Ilość istotnych zdarzeń
     let mut critical_events: i32 = 0;
     // Aktualna ściezka
     let mut current_path: Vec<i32> = Vec::new();
     // Koszt aktualnej ściezki
-    let mut current_path_value: i32 = 999999999;
+    let mut current_path_value: i32 = 99999999999;
     // Najlepsza ściezka
     let mut best_path: Vec<i32> = Vec::new();
     // Kosazt najlepszej ścieżki
-    let mut best_path_value: i32 = 9999999;
+    let mut best_path_value: i32 = 99999999999;
     // Lista tabu
     let mut tabu_list: Vec<Vec<i32>> = Vec::new();
 
@@ -40,9 +45,25 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
     best_path = current_path.clone();
     best_path_value = current_path_value.clone();
 
+    println!("Początek algorytmu...");
+
 
     // Pętla wykonująca zadaną ilość iteracji
     for i in 0..iterations {
+
+        // Obliczenie aktualnego czasu
+        let elapsed_time = timer_start
+            .to(time::PreciseTime::now())
+            .num_nanoseconds()
+            .unwrap();
+
+        // Warunek kończący czasowo
+        // Jeżeli czas jest ustawiony na inny niż 0s
+        // Pętla przerywa się po wybranym czasie
+        if (elapsed_time >= (max_time_in_seconds * 1000000000)) && max_time_in_seconds != 0 {
+            println!("Przekroczono czas");
+            break;
+        }
 
         // Zmienna przechowująca koszt scieżki badanej w aktualnej iteracji
         let mut iteration_path_value = current_path_value.clone();
@@ -77,10 +98,11 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
         }
 
         // Zmiana zbioru i oczyszczenie listy tabu
-        // jeżeli przekroczona została ilość błędów krytycznych
-        if critical_events >= max_critical_events {
+        // Jeżeli przekroczona została ilość błędów krytycznych
+        // Podanie 0 jako maks zdarzeń krytycznych powoduje wyłączenie dywersyfkacji
+        if (critical_events >= max_critical_events) && (max_critical_events != 0) {
             println!();
-            println!("Przekroczono liczbę błędów, Zerowanie...");
+            println!("Dywersyfikacja");
             rand::thread_rng().shuffle(&mut current_path);
             tabu_list = generate_empty_tabu_list(matrix.len() as i32)
         }

@@ -97,7 +97,19 @@ fn main() {
         );
         let mut critical_events: i32 = critical_events.trim().parse().expect("Błędna wartość");
 
+        // Maksymalna liczba błędów
+        println!("Maksymalny czas:");
+        let mut max_time: String = String::new();
+        io::stdin().read_line(&mut max_time).expect(
+            "Błąd wejścia/wyjścia",
+        );
+        let mut max_time: i64 = max_time.trim().parse().expect("Błędna wartość");
+
         // Rozwiązanie z parametrami
-        tabu_search::solve(&mut matrix, iterations, 2, 3);
+        tabu_search::solve(&mut matrix,
+                           iterations,
+                           lifetime,
+                           critical_events,
+                           max_time);
     }
 }
