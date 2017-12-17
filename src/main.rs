@@ -79,7 +79,7 @@ fn main() {
         io::stdin().read_line(&mut iterations).expect(
             "Błąd wejścia/wyjścia",
         );
-        let mut iterations: i32 = iterations.trim().parse().expect("Błędna wartość");
+        let iterations: i32 = iterations.trim().parse().expect("Błędna wartość");
 
         // Wczytanie kadencji
         println!("Kadencje:");
@@ -87,7 +87,7 @@ fn main() {
         io::stdin().read_line(&mut lifetime).expect(
             "Błąd wejścia/wyjścia",
         );
-        let mut lifetime: i32 = lifetime.trim().parse().expect("Błędna wartość");
+        let lifetime: i32 = lifetime.trim().parse().expect("Błędna wartość");
 
         // Maksymalna liczba błędów
         println!("Błędy:");
@@ -95,7 +95,7 @@ fn main() {
         io::stdin().read_line(&mut critical_events).expect(
             "Błąd wejścia/wyjścia",
         );
-        let mut critical_events: i32 = critical_events.trim().parse().expect("Błędna wartość");
+        let critical_events: i32 = critical_events.trim().parse().expect("Błędna wartość");
 
         // Maksymalna liczba błędów
         println!("Maksymalny czas:");
@@ -103,7 +103,7 @@ fn main() {
         io::stdin().read_line(&mut max_time).expect(
             "Błąd wejścia/wyjścia",
         );
-        let mut max_time: i64 = max_time.trim().parse().expect("Błędna wartość");
+        let max_time: i64 = max_time.trim().parse().expect("Błędna wartość");
 
         // Rozwiązanie z parametrami
         tabu_search::solve(&mut matrix,

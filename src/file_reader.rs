@@ -90,7 +90,7 @@ fn read_tsp_file(file_name: String) -> Vec<Vec<i32>> {
                             matrix = convert_coordinates_to_weigth_matrix(nodes_2d);
                         }
 
-                        self::tsplib::NodeCoord::Three(nodes_3d) => {
+                        self::tsplib::NodeCoord::Three(_nodes_3d) => {
                             println!("Algorytm nie wspiera grafow 3d");
                         }
                     }
@@ -138,7 +138,7 @@ fn distance_between_coordinates(x_start: f32,
                                 y_start: f32,
                                 x_end: f32,
                                 y_end: f32) -> i32 {
-    let distance_power_sum = ((x_start - x_end).powi(2) + (y_start - y_end).powi(2));
+    let distance_power_sum = (x_start - x_end).powi(2) + (y_start - y_end).powi(2);
 
     return distance_power_sum.sqrt() as i32;
 }
@@ -188,7 +188,7 @@ fn read_atsp_file(file_name: String) -> Vec<Vec<i32>> {
                 if current_line > 6 && !line.contains("EOF") {
 
                     // Parsuj linię do wektora
-                    let mut parsed_line = parse_file_line(line);
+                    let parsed_line = parse_file_line(line);
 
                     // Dodaj wszytkie elementy z linii do wiersza macierzy
                     for i in 0..(parsed_line.len() as usize) {

@@ -1,7 +1,5 @@
 extern crate rand;
 extern crate time;
-
-use print_utils;
 use self::rand::Rng;
 
 
@@ -10,7 +8,7 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
              lifetime: i32,
              max_critical_events: i32,
              max_time_in_seconds: i64) {
-    println!("Przygotowywanie zmiennych...")
+    println!("Przygotowywanie zmiennych...");
 
     // Początek zliczania czasu
     let timer_start = time::PreciseTime::now();
@@ -19,13 +17,13 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
     // Aktualna ściezka
     let mut current_path: Vec<i32> = Vec::new();
     // Koszt aktualnej ściezki
-    let mut current_path_value: i32 = 99999999999;
+    let mut current_path_value: i32 = 9999999999;
     // Najlepsza ściezka
-    let mut best_path: Vec<i32> = Vec::new();
+    let mut best_path: Vec<i32>;
     // Kosazt najlepszej ścieżki
-    let mut best_path_value: i32 = 99999999999;
+    let mut best_path_value: i32 = 9999999999;
     // Lista tabu
-    let mut tabu_list: Vec<Vec<i32>> = Vec::new();
+    let mut tabu_list: Vec<Vec<i32>>;
 
     // Wypełnij wektor okreslający ściezkę kolejnymi wierzchokami
     for i in 0..(matrix.len() as i32) {
@@ -49,7 +47,7 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
 
 
     // Pętla wykonująca zadaną ilość iteracji
-    for i in 0..iterations {
+    for _i in 0..iterations {
 
         // Obliczenie aktualnego czasu
         let elapsed_time = timer_start
@@ -66,14 +64,14 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
         }
 
         // Zmienna przechowująca koszt scieżki badanej w aktualnej iteracji
-        let mut iteration_path_value = current_path_value.clone();
+        let iteration_path_value = current_path_value.clone();
         // Zmiana elementów w ścieżce
         current_path = swap_elements(&mut current_path, &mut tabu_list, &matrix, lifetime);
         // Aktualizacja wagi aktualnej ściezki
         current_path_value = get_current_path_value(&matrix, &mut current_path);
 
         // Przypisanie wartości aktualnej ścieżki jako najlepszej
-        if (current_path_value < best_path_value) {
+        if current_path_value < best_path_value {
             println!();
             println!("Ściezka: {:?}", best_path);
             println!("Koszt ścieżki: {}", best_path_value);
@@ -116,9 +114,9 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
 fn generate_empty_tabu_list(size: i32) -> Vec<Vec<i32>> {
     let mut tabu_list: Vec<Vec<i32>> = Vec::new();
 
-    for i in 0..size {
+    for _i in 0..size {
         let mut tabu_list_row: Vec<i32> = Vec::new();
-        for i in 0..size {
+        for _i in 0..size {
             tabu_list_row.push(0);
         }
         tabu_list.push(tabu_list_row);
@@ -153,7 +151,7 @@ fn swap_elements(path: &mut Vec<i32>,
                  tabu_list: &mut Vec<Vec<i32>>,
                  matrix: &Vec<Vec<i32>>,
                  lifetime: i32) -> Vec<i32> {
-    let mut current_path: Vec<i32> = Vec::new();
+    let mut current_path: Vec<i32>;
     let mut best_path: Vec<i32> = Vec::new();
     let mut current_path_value: i32;
     let mut best_path_value: i32 = 99999999;
@@ -171,8 +169,8 @@ fn swap_elements(path: &mut Vec<i32>,
                 if current_path_value < best_path_value {
                     best_path = current_path;
                     best_path_value = current_path_value;
-                    best_city_x = (i as i32);
-                    best_city_y = (j as i32);
+                    best_city_x = i as i32;
+                    best_city_y = j as i32;
                 }
             }
         }
