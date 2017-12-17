@@ -43,7 +43,9 @@ fn main() {
                 io::stdin().read_line(&mut file_name).expect(
                     "Błąd wejścia/wyjścia",
                 );
-                matrix = file_reader::read_file(String::from(file_name.trim()));
+
+                matrix = file_reader::read_any_file(String::from(file_name.trim()));
+
                 print_utils::print_matrix(&matrix);
             }
             2 => {
