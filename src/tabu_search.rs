@@ -73,10 +73,15 @@ pub fn solve(matrix: &mut Vec<Vec<i32>>,
         // Przypisanie wartości aktualnej ścieżki jako najlepszej
         if current_path_value < best_path_value {
             println!();
-            println!("Ściezka: {:?}", best_path);
-            println!("Koszt ścieżki: {}", best_path_value);
             best_path = current_path.clone();
             best_path_value = current_path_value.clone();
+            // Obliczenie aktualnego czasu
+            let elapsed_time = timer_start
+                .to(time::PreciseTime::now())
+                .num_nanoseconds()
+                .unwrap();
+
+            print!("{} {}", best_path_value, elapsed_time);
         }
 
         // Minimalizacja wartości w liście tabu
